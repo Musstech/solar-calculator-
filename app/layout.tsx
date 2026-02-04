@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Inter, Outfit } from "next/font/google";
 import "./globals.css";
+import { Providers } from "@/components/Providers";
+import { ChatWidget } from "@/components/ui/ChatWidget";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -17,10 +19,6 @@ export const metadata: Metadata = {
   description: "Professional Solar Estimation Tool",
 };
 
-import { ChatWidget } from "@/components/ui/ChatWidget";
-
-// ... previous imports
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -31,8 +29,10 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${outfit.variable} antialiased font-sans`}
       >
-        {children}
-        <ChatWidget />
+        <Providers>
+          {children}
+          <ChatWidget />
+        </Providers>
       </body>
     </html>
   );

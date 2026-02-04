@@ -2,9 +2,11 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useSession, signOut } from "next-auth/react";
 
 export const SideNav = () => {
     const pathname = usePathname();
+    const { data: session } = useSession();
 
     const navItems = [
         { name: "Overview", href: "/dashboard", icon: "📊" },
@@ -27,8 +29,8 @@ export const SideNav = () => {
                             key={item.href}
                             href={item.href}
                             className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${isActive
-                                    ? "bg-green text-white shadow-lg"
-                                    : "hover:bg-white/10 text-slate-300"
+                                ? "bg-green text-white shadow-lg"
+                                : "hover:bg-white/10 text-slate-300"
                                 }`}
                         >
                             <span className="text-lg">{item.icon}</span>
@@ -38,16 +40,32 @@ export const SideNav = () => {
                 })}
             </nav>
 
-            <div className="p-6 border-t border-white/10">
+            <div className="p-6 border-t border-white/10 space-y-4">
                 <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-green flex items-center justify-center font-bold">
-                        JD
-                    </div>
-                    <div>
-                        <p className="text-sm font-medium">John Doe</p>
-                        <p className="text-xs text-slate-400">Musstech Installer</p>
+                    {session?.user?.image ? (
+                        <img
+                            src={session.user.image}
+                            alt="Profile"
+                            className="w-8 h-8 rounded-full bg-green"
+                        />
+                    ) : (
+                        <div className="w-8 h-8 rounded-full bg-green flex items-center justify-center font-bold">
+                            {session?.user?.name?.charAt(0) || "U"}
+                        </div>
+                    )}
+                    <div className="flex-1 overflow-hidden">
+                        <p className="text-sm font-medium truncate">{session?.user?.name || "User"}</p>
+                        <p className="text-xs text-slate-400 truncate">{session?.user?.email || "Installer"}</p>
                     </div>
                 </div>
+
+                <button
+                    onClick={() => signOut({ callbackUrl: "/" })}
+                    className="w-full flex items-center gap-3 px-4 py-2 text-sm text-slate-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors"
+                >
+                    <span>🚪</span>
+                    <span>Sign Out</span>
+                </button>
             </div>
         </div>
     );
